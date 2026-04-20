@@ -1,0 +1,35 @@
+name: Build Claim
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: macos-15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Generate Xcode project
+        run: |
+          ls -la
+          xcodegen generate
+          ls -la
+
+      - name: Build
+        run: |
+          xcodebuild -project Claim.xcodeproj \
+            -scheme Claim \
+            -configuration Debug \
+            -destination 'generic/platform=iOS' \
+            build \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO
